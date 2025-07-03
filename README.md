@@ -29,7 +29,7 @@ Traditionally, you would list each MCP server directly in your LLM client’s `m
 
 - **Node.js** ≥ v16
 - **npm** (or Yarn)
-- A set of running MCP servers you want to proxy (e.g. [FastMCP math server](#math-server) on `http://localhost:8083/mcp`, CoinGecko’s SSE-based MCP, etc.)
+- A set of running MCP servers you want to proxy (e.g. [FastMCP math server](https://github.com/umin-ai/math-mcp) on `http://localhost:8083/mcp`, CoinGecko’s SSE-based MCP, etc.)
 
 ---
 
