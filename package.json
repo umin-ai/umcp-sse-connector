@@ -1,0 +1,22 @@
+{
+  "name": "meta-dynamic-server",
+  "version": "1.0.0",
+  "description": "Meta MCP server that proxies multiple remote MCP endpoints",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5",
+    "ts-node-dev": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "license": "MIT"
+}
