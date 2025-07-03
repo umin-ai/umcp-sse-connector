@@ -131,4 +131,4 @@ curl -X POST http://localhost:8080/messages \
 
 ## 📄 License
 
-Released under the **MIT License**. See [LICENSE](LICENSE) for details.
+Released under the **MIT License**. See [LICENSE](https://github.com/umin-ai/umcp-sse-connector/blob/main/LICENSE.md) for details.
