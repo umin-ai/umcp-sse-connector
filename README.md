@@ -19,7 +19,7 @@ Traditionally, you would list each MCP server directly in your LLM client’s `m
 
 **Meta-Dynamic** centralizes these concerns in one proxy:
 
-- **Single endpoint**: Your LLM client only talks to `http://localhost:8084/sse`, regardless of how many backends you add.
+- **Single endpoint**: Your LLM client only talks to `http://localhost:8080/sse`, regardless of how many backends you add.
 - **Dynamic remotes**: Remotes are configured in one place (your proxy), decoupled from the LLM—add/remove without touching the client.
 - **Unified logic**: Namespacing, tool/resource aggregation, error handling, and transport selection live in a single codebase, reducing duplication.
 
@@ -89,10 +89,10 @@ const remotes = [
   // add more MCP endpoints here
 ];
 
-new MetaDynamicServer(remotes).start(8084);
+new MetaDynamicServer(remotes).start(8080);
 ```
 
-> **Note:** The proxy exposes an SSE stream on port **8084** by default: `http://localhost:8084/sse`
+> **Note:** The proxy exposes an SSE stream on port **8080** by default: `http://localhost:8080/sse`
 
 ---
 
@@ -112,9 +112,9 @@ You can verify connectivity with `curl` or your LLM’s built-in MCP client.
 Example with `curl` to list resources:
 ```bash
 # 1. open an SSE stream:
-curl -N http://localhost:8084/sse
+curl -N http://localhost:8080/sse
 # 2. in another shell, send a JSON-RPC over POST:
-curl -X POST http://localhost:8084/messages \
+curl -X POST http://localhost:8080/messages \
      -H "Content-Type: application/json" \
      -d '{"jsonrpc":"2.0","id":1,"method":"resources/list"}'
 ```
