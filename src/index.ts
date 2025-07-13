@@ -1,14 +1,88 @@
-import { MetaDynamicServer, RemoteConfig } from "./meta-dynamic-server";
+// src/index.ts
 import { MetaDynamicServerCache } from "./meta-dynamic-server-cache";
+import type { RemoteConfig }      from "./types";
 
+// 1) Raw JSON config types
+interface RawStdIOConfig {
+  autoApprove: string[];
+  disabled:    boolean;
+  timeout:     number;
+  type:        "stdio";
+  command:     string;
+  args:        string[];
+  env:         Record<string,string>;
+}
+
+interface RawHTTPConfig {
+  autoApprove: string[];
+  disabled:    boolean;
+  timeout:     number;
+  type:        "sse" | "httpStream";
+  url:         string;
+  env:         Record<string,string>;
+}
+
+type RawServerConfig = RawStdIOConfig | RawHTTPConfig;
+
+// 2) Inline JSON
+const json: { mcpServers: Record<string,RawServerConfig> } = {
+  mcpServers: {
+    "github.com/GLips/Figma-Context-MCP": {
+      autoApprove: [],
+      disabled:     false,
+      timeout:      60,
+      type:         "stdio",
+      command:      "npx",
+      args: [
+        "-y",
+        "figma-developer-mcp",
+        "--figma-api-key=<figd_token>",
+        "--stdio"
+      ],
+      env: {}
+    },
+    "coingecko": {
+      autoApprove: [],
+      disabled:     true,
+      timeout:      60,
+      type:         "sse",
+      url:          "https://mcp.api.coingecko.com/sse",
+      env: {}
+    }
+    // …add more servers here…
+  }
+};
+
+// 3) Map into RemoteConfig[], filtering disabled and preserving timeout & autoApprove
+
+const remotes: RemoteConfig[] = Object.entries(json.mcpServers)
+  .filter(([, cfg]) => !cfg.disabled)
+  .map(([name, cfg]) => {
+    if (cfg.type === "stdio") {
+      return {
+        name,
+        transport:   "stdio",
+        command:     cfg.command,
+        args:        cfg.args,
+        // restore PATH so "npx" is found:
+        env:         { ...cfg.env, PATH: process.env.PATH! },
+        timeout:     cfg.timeout,
+        autoApprove: cfg.autoApprove
+      };
+    } else {
+      return {
+        name,
+        transport:   cfg.type,
+        url:         cfg.url,
+        timeout:     cfg.timeout,
+        autoApprove: cfg.autoApprove
+      };
+    }
+  });
+
+// 4) Bootstrap the meta‐server
 (async () => {
-  const remotes: RemoteConfig[] = [
-    { name: "math", url: "http://localhost:8080/1234-5678-9101/sse", transport: "sse" },
-    { name: "coingecko", url: "https://mcp.api.coingecko.com/sse", transport: "sse" },
-    // add more remotes here
-  ];
-
   const server = new MetaDynamicServerCache(remotes);
-  await server.start();
-  console.log("Meta‑dynamic MCP server is running (via SSE) on port 8080");
+  await server.start(8080);
+  console.log("Meta-dynamic MCP server running on http://localhost:8080/sse");
 })();
