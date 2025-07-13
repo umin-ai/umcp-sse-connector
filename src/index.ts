@@ -1,5 +1,5 @@
 // src/index.ts
-import { MetaDynamicServerCache } from "./meta-dynamic-server-cache";
+import { MetaDynamicServer } from "./meta-dynamic-server-no-cache";
 import type { RemoteConfig }      from "./types";
 
 // 1) Raw JSON config types
@@ -29,25 +29,36 @@ const json: { mcpServers: Record<string,RawServerConfig> } = {
   mcpServers: {
     "github.com/GLips/Figma-Context-MCP": {
       autoApprove: [],
-      disabled:     false,
+      disabled:     true,
       timeout:      60,
       type:         "stdio",
       command:      "npx",
       args: [
         "-y",
         "figma-developer-mcp",
-        "--figma-api-key=<figd_token>",
+        "--figma-api-key=<token>",
         "--stdio"
       ],
       env: {}
     },
     "coingecko": {
       autoApprove: [],
-      disabled:     true,
+      disabled:     false,
       timeout:      60,
       type:         "sse",
       url:          "https://mcp.api.coingecko.com/sse",
       env: {}
+    },
+    "etherscan": {
+      disabled:    false,
+      autoApprove: [],
+      timeout:     60,
+      type:        "stdio",
+      command: "npx",
+      args: ["-y", "@aurracloud/etherscan-mcp"],
+      env: {
+        "ETHERSCAN_API_KEY": "<token>"
+      }
     }
     // …add more servers here…
   }
@@ -82,7 +93,7 @@ const remotes: RemoteConfig[] = Object.entries(json.mcpServers)
 
 // 4) Bootstrap the meta‐server
 (async () => {
-  const server = new MetaDynamicServerCache(remotes);
+  const server = new MetaDynamicServer(remotes);
   await server.start(8080);
   console.log("Meta-dynamic MCP server running on http://localhost:8080/sse");
 })();
