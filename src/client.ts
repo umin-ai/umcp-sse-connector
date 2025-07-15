@@ -16,20 +16,22 @@ async function main() {
   );
 
   // 2. Connect over SSE to your meta-dynamic server
-  const transport = new SSEClientTransport(new URL("http://localhost:8080/sse"));
+//   const transport = new SSEClientTransport(new URL("http://localhost:8080/sse"));
+  const transport = new SSEClientTransport(new URL("http://localhost:5000/mcp/sse"));
+
   await client.connect(transport);
 
-  // 3. List the available tools
-  const result = await client.request(
-    { method: "tools/list" },
-    ListToolsResultSchema
-  );
-  type ListToolsResult = z.infer<typeof ListToolsResultSchema>;
+//   // 3. List the available tools
+//   const result = await client.request(
+//     { method: "tools/list" },
+//     ListToolsResultSchema
+//   );
+//   type ListToolsResult = z.infer<typeof ListToolsResultSchema>;
 
-  console.log("Available MCP tools:");
-  (result as ListToolsResult).tools.forEach(tool => {
-    console.log(`- ${tool.name} -`, tool.title);
-  });
+//   console.log("Available MCP tools:");
+//   (result as ListToolsResult).tools.forEach(tool => {
+//     console.log(`- ${tool.name} -`, tool.title);
+//   });
 
   // Close connection (optional)
   transport.close();

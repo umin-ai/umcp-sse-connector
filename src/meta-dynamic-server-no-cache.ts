@@ -184,7 +184,6 @@ export class MetaDynamicServer {
       CallToolRequestSchema,
       async ({ params }): Promise<CallToolResult> => {
         const raw = params.name;
-        console.log("raw tool name:", raw);
 
         const idx = raw.indexOf("_");
         if (idx < 0) {
